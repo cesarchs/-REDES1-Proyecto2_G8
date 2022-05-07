@@ -503,4 +503,6 @@ end
 
 
 Conexión con OpenVPN
+
+
 ![](https://github.com/cesarchs/-REDES1-Proyecto2_G8/blob/main/imgs/vpn.jpeg)
