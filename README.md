@@ -157,6 +157,137 @@ standby 1 preempt
 # Topología 2
 ![](https://github.com/cesarchs/-REDES1-Proyecto2_G8/blob/main/imgs/topo2.jpeg)
 
+## Distribución 
+| Deprtamento  | Distribución        | Cantidad |
+|--------------|---------------------|----------|
+| RRHH         | Gerente             | 1        |
+|              | Reclutadores        | 15       |
+|              | Analistas           | 5        |
+|              | **Total**           | **21**   |
+| Contabilidad | Gerente             | 1        |
+|              | Asistente de Conta. | 5        |
+|              | Contador General    | 1        |
+|              | Auditor             | 1        |
+|              | **Total**           | **8**       |
+| Ventas       | Operadores de Ventas  | 76       |
+|              | Encargados de Cuentas | 4        |
+|              | Manager               | 12       |
+|              | Gerente               | 1        |
+|              | **Total**             | **93**       |
+|              | **Crecimiento Prev**  | **≈ 123**    |
+| Informática | Programadores           | 15       |
+|             | Gestor de Proyectos     | 5        |
+|             | Admin de Base de Datos  | 1        |
+|             | Analista de Infrastruc. | 3        |
+|             | Tester                  | 6        |
+|             | Gerente                 | 1        |
+|             | **Total**               | **31**      |
+|             | **Crecimiento Prev**    | **≈ 37**     |
+
+Comandos utilizados en la topología 2:
+Para las VPCs
+```bash
+#Ventas
+ip 192.168.84.1/24 192.168.84.126 
+#Informatica
+ip 192.168.84.129/24 192.168.84.190
+#RRHH
+ip 192.168.84.193/24 192.168.84.222
+#Contabilidad
+ip 192.168.84.225/24 192.168.84.238 
+```
+Server (SW1) Configuración de valn's
+```bash
+configure terminal
+vlan 10
+name RHUMANOS
+exit
+exit
+configure terminal
+vlan 20
+name CONTABILIDAD
+exit
+exit
+configure terminal
+vlan 30
+name VENTAS
+exit
+exit
+configure terminal
+vlan 40
+name INFORMATICA
+exit
+exit
+do sh vlan-sw
+```
+Configuración de Puertos
+```bash
+conf t
+int f1/0
+switchport mode trunk
+switchport trunk allowed vlan 1,10,20,30,40,1002-1005
+exit
+
+int f1/1
+switchport mode trunk
+switchport trunk allowed vlan 1,20,30,1002-1005
+exit
+
+int f1/2
+switchport mode trunk
+switchport trunk allowed vlan 1,10,40,1002-1005
+exit
+```
+Configuración de Router
+```bash
+conf t
+int f0/0
+no shutdown
+exit
+int f0/0.10
+encapsulation dot1Q 10
+ip address 192.168.84.222 255.255.255.224 
+no shutdown
+exit
+int f0/0.20
+encapsulation dot1Q 20
+ip address 192.168.84.238 255.255.255.240
+no shutdown
+exit
+int f0/0.30
+encapsulation dot1Q 30
+ip address 192.168.84.126 255.255.255.128
+no shutdown
+exit
+int f0/0.40
+encapsulation dot1Q 40
+ip address 192.168.84.190 255.255.255.192
+no shutdown
+exit
+```
+Enrutamiento Estático
+```bash
+int f1/0
+ip address 0.0.0 255.255.255.
+no shutdown
+exit
+int f2/0
+ip address 0.0.0 255.255.255.
+no shutdown
+exit
+
+#ROTEO ESTÁTICO
+configure terminal
+router rip
+version 2
+network 10.8.0.0
+network 10.8.0.8
+network 10.8.0.16
+network 10.8.0.24
+network 10.8.0.32
+network 10.8.0.40
+end
+```
 
 
 # Topología 3
