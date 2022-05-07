@@ -295,12 +295,12 @@ end
 ![](https://github.com/cesarchs/-REDES1-Proyecto2_G8/blob/main/imgs/topo3.jpeg)
 
 Red: 192.168.85.0/24
-| Decimal | Binario   | Conversión |
-| ------- | --------- | ---------- |
-| 192     | 1100 0000 | 8+2 = 10   |
-| 168     | 1010 1000 | 8 = 8      |
-| 85      | 0101 0101 | 0 = 0      |
-| 0       | 0000 0000 | 0 = 0      |
+| Decimal | Binario   |
+| ------- | --------- |
+| 192     | 1100 0000 |
+| 168     | 1010 1000 |
+| 85      | 0101 0101 |
+| 0       | 0000 0000 |
 
 ## Cálculo de subnetting
 
@@ -436,23 +436,9 @@ switchport mode access
 switchport access vlan 40
 exit
 ```
-Configuración de las IP VPCs
-```bash
-configure terminal
-interface f1/0
-ip address 10.8.0.38 255.255.255.248
-no shutdown
-exit
-
-configure terminal
-interface f2/0
-ip address 10.8.0.42 255.255.255.248
-no shutdown
-exit
-```
 ## R1
 
-Configuración de interfaces
+Configuración de las IP VPCs
 ```bash
 configure terminal
 interface f1/0
