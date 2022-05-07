@@ -37,7 +37,7 @@ Este contará con tres topologías las cuales se describirán a continuación:
 |   6   | 10.8.0.32 | 255.255.255.248 | 10.8.0.33     | 10.8.0.38     | 10.8.0.39 |      8       |        6         |
 |   6   | 10.8.0.40 | 255.255.255.248 | 10.8.0.41     | 10.8.0.46     | 10.8.0.47 |      8       |        6         |
 
-
+### Comandos utilizados en la topología 1
 Configuración de cada uno de los routers: 
 ## R1
 Configurando ip address
@@ -184,8 +184,9 @@ standby 1 preempt
 |             | **Total**               | **31**      |
 |             | **Crecimiento Prev**    | **≈ 37**     |
 
-Comandos utilizados en la topología 2:
-Para las VPCs
+### Comandos utilizados en la topología 2
+
+Comandos para las VPCs
 ```bash
 #Ventas
 ip 192.168.84.1/24 192.168.84.126 
@@ -293,6 +294,191 @@ end
 # Topología 3
 ![](https://github.com/cesarchs/-REDES1-Proyecto2_G8/blob/main/imgs/topo3.jpeg)
 
+Red: 192.168.85.0/24
+| Decimal | Binario   | Conversión |
+| ------- | --------- | ---------- |
+| 192     | 1100 0000 | 8+2 = 10   |
+| 168     | 1010 1000 | 8 = 8      |
+| 85      | 0101 0101 | 0 = 0      |
+| 0       | 0000 0000 | 0 = 0      |
+
+## Cálculo de subnetting
+
+Subredes
+- RRHH
+- CONTABILIDAD
+- VENTAS
+- INFORMATICA
+
+Máscara de Subred
+
+| Red                               | Host      |
+| --------------------------------- | --------- |
+| 1111 1111 . 1111 1111 . 1111 1111 | 0000 0000 |
+
+Número de bits que hay que tomar para las 4 subredes:   
+- 2^n => 4 
+- 2^2 = 4
+- 4 => 4
+> **Nota:** Se necesitan tomar 2 bits de la parte del host (/26)Nueva mascara de subred: 255.255.255.192
+>
+Combinación de bits de nueva máscara de subred 192 = 1100 0000
+Posibles combinaciones:
+- 0000 0000 = 0
+- 0100 0000 = 64 
+- 1000 0000 = 128
+- 1100 0000 = 192
+
+Calcular número de hosts por subred:
+- H = 2^n - 2 (n: numero de bits de la parte del host)
+- H = 2^6 - 2 = 62
+
+Cálculo del primer Host:
+- 192.168.85.(0 + 1) = 192.168.85.1
+
+Cálculo del último Host:
+- 192.168.85.(0 + 62) = 192.168.85.62
+
+Cálculo del Broadcast:
+- 192.168.85.(62 + 1) = 192.168.85.63
+
+| VLAN  #   |   SALTO   |       IP Red      |     Mascara     |   Primer Host  |  Ultimo Host   |    Broadcast   | HOST TOTALES  | CANTIDAD DE HOSTS |
+| --------- | --------- | ----------------- | --------------- | -------------- | -------------- | -------------- | ------------- | ----------------- |
+| 10(RRHH)  |     64    |  192.168.85.0/26  | 255.255.255.192 |  192.168.85.1  | 192.168.85.62  | 192.168.85.63  |       62      |         1         |
+| 20(CONTA) |     64    |  192.168.85.64/26 | 255.255.255.192 |  192.168.85.65 | 192.168.85.126 | 192.168.85.127 |       62      |         1         |
+| 30(VENTAS)|     64    | 192.168.85.128/26 | 255.255.255.192 | 192.168.85.129 | 192.168.85.190 | 192.168.85.191 |       62      |         1         |
+| 40(INFOR) |     64    | 192.168.85.192/26 | 255.255.255.192 | 192.168.85.193 | 192.168.85.254 | 192.168.85.255 |       62      |         1         |
+
+### Comandos utilizados en la topología 3
+Configuración de la VTP
+```bash
+configure terminal
+vtp domain GRUPO8
+vtp password GRUPO8
+vtp version 2
+vtp mode server
+end
+```
+## ESW1
+
+Configuración de Interfaz Truncal
+```bash
+configure terminal
+interface f1/4
+switchport mode trunk
+switchport trunk allowed vlan 1,10,20,30,40,1002-1005
+end
+```
+COnfiguración de las VLANs
+```bash
+configure terminal
+vlan 10
+name RHUMANOS
+vlan 20
+name CONTABILIDAD
+vlan 30
+name VENTAS
+vlan 40
+name INFORMATICA
+end
+```
+Router on stick de ESW1
+```bash
+configure terminal
+interface f0/0
+no shutdown
+exit
+
+interface f0/0.10
+encapsulation dot1Q 10
+ip address 192.168.85.1 255.255.255.192
+exit
+
+interface f0/0.20
+encapsulation dot1Q 20
+ip address 192.168.85.65 255.255.255.192
+exit
+
+interface f0/0.30
+encapsulation dot1Q 30
+ip address 192.168.85.129 255.255.255.192
+exit
+
+interface f0/0.40
+encapsulation dot1Q 40
+ip address 192.168.85.193 255.255.255.192
+exit
+```
+
+Interfaces en modo access esw1
+```bash
+configure terminal
+interface f1/0
+switchport mode access
+switchport access vlan 10
+exit
+
+configure terminal
+interface f1/1
+switchport mode access
+switchport access vlan 20
+exit
+
+configure terminal
+interface f1/2
+switchport mode access
+switchport access vlan 30
+exit
+
+configure terminal
+interface f1/3
+switchport mode access
+switchport access vlan 40
+exit
+```
+Configuración de las IP VPCs
+```bash
+configure terminal
+interface f1/0
+ip address 10.8.0.38 255.255.255.248
+no shutdown
+exit
+
+configure terminal
+interface f2/0
+ip address 10.8.0.42 255.255.255.248
+no shutdown
+exit
+```
+## R1
+
+Configuración de interfaces
+```bash
+configure terminal
+interface f1/0
+ip address 10.8.0.38 255.255.255.248
+no shutdown
+exit
+
+configure terminal
+interface f2/0
+ip address 10.8.0.42 255.255.255.248
+no shutdown
+exit
+```
+Configuración de RIP
+```bash
+configure terminal
+router rip
+version 2
+network 10.8.0.32
+network 10.8.0.40
+network 192.168.85.0
+network 192.168.85.64
+network 192.168.85.128
+network 192.168.85.192
+end
+```
 
 ## Configuración de la VPN
 | PASOS| DESCRIPCION| 
@@ -314,3 +500,4 @@ end
 | 15           | Instalar software |
 | 16           | Abrir el software|
 | 17           | Importar el archivo .OVPN y conectar a la red|
+![](https://github.com/cesarchs/-REDES1-Proyecto2_G8/blob/main/imgs/vpn.jpeg)
