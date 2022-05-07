@@ -1,0 +1,127 @@
+-------------------------- VTP --------------------------
+configure terminal
+vtp domain GRUPO8
+vtp password GRUPO8
+vtp version 2
+vtp mode server
+end
+---------------------------------------------------------
+
+----------------- INTERFACE TRUNK ESW1 ------------------
+configure terminal
+interface f1/4
+switchport mode trunk
+switchport trunk allowed vlan 1,10,20,30,40,1002-1005
+end
+---------------------------------------------------------
+
+-------------------- VLANS EN ESW1 ----------------------
+configure terminal
+vlan 10
+name RHUMANOS
+vlan 20
+name CONTABILIDAD
+vlan 30
+name VENTAS
+vlan 40
+name INFORMATICA
+end
+---------------------------------------------------------
+
+------------------ ROUTER ON A STICK --------------------
+configure terminal
+interface f0/0
+no shutdown
+exit
+
+interface f0/0.10
+encapsulation dot1Q 10
+ip address 192.168.85.1 255.255.255.192
+exit
+
+interface f0/0.20
+encapsulation dot1Q 20
+ip address 192.168.85.65 255.255.255.192
+exit
+
+interface f0/0.30
+encapsulation dot1Q 30
+ip address 192.168.85.129 255.255.255.192
+exit
+
+interface f0/0.40
+encapsulation dot1Q 40
+ip address 192.168.85.193 255.255.255.192
+exit
+---------------------------------------------------------
+
+------------- INTERFACE MODE ACCESS ESW1 ----------------
+
+configure terminal
+interface f1/0
+switchport mode access
+switchport access vlan 10
+exit
+
+configure terminal
+interface f1/1
+switchport mode access
+switchport access vlan 20
+exit
+
+configure terminal
+interface f1/2
+switchport mode access
+switchport access vlan 30
+exit
+
+configure terminal
+interface f1/3
+switchport mode access
+switchport access vlan 40
+exit
+---------------------------------------------------------
+
+---------------------- IP VPCS --------------------------
+ip 192.168.85.5 255.255.255.192 192.168.85.1
+save
+
+ip 192.168.85.70 255.255.255.192 192.168.85.65
+save
+
+ip 192.168.85.135 255.255.255.192 192.168.85.129
+save
+
+ip 192.168.85.195 255.255.255.192 192.168.85.193
+save
+---------------------------------------------------------
+
+------------- CONFIGURACION INTERFACES R1 ---------------
+configure terminal
+interface f1/0
+ip address 10.8.0.38 255.255.255.248
+no shutdown
+exit
+
+configure terminal
+interface f2/0
+ip address 10.8.0.42 255.255.255.248
+no shutdown
+exit
+---------------------------------------------------------
+
+----------------- CONFIGURACION RIP R1 ------------------
+configure terminal
+router rip
+version 2
+network 10.8.0.32
+network 10.8.0.40
+network 192.168.85.0
+network 192.168.85.64
+network 192.168.85.128
+network 192.168.85.192
+end
+---------------------------------------------------------
+
+
+

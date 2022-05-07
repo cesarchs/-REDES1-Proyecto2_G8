@@ -1,0 +1,67 @@
+192.168.X5.0/24
+
+192.168.85.0/24
+
+   192         168          85          0
+1100 0000 . 1010 1000 . 0101 0101 . 0000 0000
+
+Subredes
+
+1. RRHH
+2. CONTABILIDAD
+3. VENTAS
+4. INFORMATICA
+
+CALCULO SUBREDES
+1. IDENTIFICAR MASCARA DE SUBRED
+   MASCARA DE SUBRED (/24)
+   255.255.255.0
+
+   <-------------- Red -------------> <- Host ->
+   1111 1111 . 1111 1111 . 1111 1111 . 0000 0000
+
+2. OBTENER NUMERO DE BITS QUE HAY QUE TOMAR PARA 4 SUBREDES
+   
+   2^n => 4
+   2^2 = 4
+
+    4 => 4
+   Se necesitan tomar 2 bits de la parte del host (/26)
+   Nueva mascara de subred: 255.255.255.192
+
+3. COMBINAR BITS DE NUEVA MASCARA DE SUBRED (192)
+ 
+   192 = 1100 0000
+   Posibles combinaciones:
+      a) 0000 0000 = 0
+      b) 0100 0000 = 64 
+      c) 1000 0000 = 128
+      d) 1100 0000 = 192
+
+
+   Manera sencilla xd
+   256 - 192 = 64
+
+4) CALCULAR NUMERO DE HOSTS POR SUBRED
+   H = 2^n - 2 (n: numero de bits de la parte del host)
+   H = 2^6 - 2 = 62
+
+5) CALCULO PRIMER HOST
+   192.168.85.(0 + 1) = 192.168.85.1
+
+6) CALCULO ULTIMO HOST
+   192.168.85.(0 + 62) = 192.168.85.62
+
+7) CALCULO BROADCAST
+   192.168.85.(62 + 1) = 192.168.85.63
+
+
+TABLA FINAL
+
+VLAN  #   |   SALTO   |       IP Red      |     Mascara     |   Primer Host  |  Ultimo Host   |    Broadcast   | HOST TOTALES  | CANTIDAD DE HOSTS |
+10(RRHH)  |     64    |  192.168.85.0/26  | 255.255.255.192 |  192.168.85.1  | 192.168.85.62  | 192.168.85.63  |       62      |         1         |
+20(CONTA) |     64    |  192.168.85.64/26 | 255.255.255.192 |  192.168.85.65 | 192.168.85.126 | 192.168.85.127 |       62      |         1         |
+30(VENTAS)|     64    | 192.168.85.128/26 | 255.255.255.192 | 192.168.85.129 | 192.168.85.190 | 192.168.85.191 |       62      |         1         |
+40(INFOR) |     64    | 192.168.85.192/26 | 255.255.255.192 | 192.168.85.193 | 192.168.85.254 | 192.168.85.255 |       62      |         1         |
+
+
