@@ -500,4 +500,7 @@ end
 | 15           | Instalar software |
 | 16           | Abrir el software|
 | 17           | Importar el archivo .OVPN y conectar a la red|
+
+
+Conexión con OpenVPN
 ![](https://github.com/cesarchs/-REDES1-Proyecto2_G8/blob/main/imgs/vpn.jpeg)
