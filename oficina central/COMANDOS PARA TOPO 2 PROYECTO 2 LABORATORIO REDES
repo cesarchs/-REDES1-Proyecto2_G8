@@ -1,0 +1,149 @@
+COMANDOS PARA TOPO 2 PROYECTO 2 LABORATORIO REDES 1
+
+PARA VPCS
+
+ventas
+ip 192.168.84.1/24 192.168.84.126 
+
+informatica
+ip 192.168.84.129/24 192.168.84.190
+
+RRHH
+ip 192.168.84.193/24 192.168.84.222
+
+contabilidad
+ip 192.168.84.225/24 192.168.84.238 
+
+
+
+PARA SWITCH 
+SERVER (SW1)
+CONFIGURACION DE VLAN'S
+
+configure terminal
+vlan 10
+name RHUMANOS
+exit
+exit
+configure terminal
+vlan 20
+name CONTABILIDAD
+exit
+exit
+configure terminal
+vlan 30
+name VENTAS
+exit
+exit
+configure terminal
+vlan 40
+name INFORMATICA
+exit
+exit
+
+do sh vlan-sw
+
+CONFIGURACION DE PUERTOS
+conf t
+int f1/0
+switchport mode trunk
+switchport trunk allowed vlan 1,10,20,30,40,1002-1005
+exit
+
+
+int f1/1
+switchport mode trunk
+switchport trunk allowed vlan 1,20,30,10,40,1002-1005
+exit
+
+
+int f1/2
+switchport mode trunk
+switchport trunk allowed vlan 1,10,40,20,30,1002-1005
+exit
+
+
+
+##############################################
+##########configuracion ROUTER#################
+###############################################
+
+
+conf t
+int f0/0
+no shutdown
+exit
+int f0/0.10
+encapsulation dot1Q 10
+ip address 192.168.84.222 255.255.255.224 
+no shutdown
+exit
+int f0/0.20
+encapsulation dot1Q 20
+ip address 192.168.84.238 255.255.255.240
+no shutdown
+exit
+int f0/0.30
+encapsulation dot1Q 30
+ip address 192.168.84.126 255.255.255.128
+no shutdown
+exit
+int f0/0.40
+encapsulation dot1Q 40
+ip address 192.168.84.190 255.255.255.192
+no shutdown
+exit
+exit
+
+################################
+para enrutamiento estatico
+################################
+
+
+conf t
+int f1/0
+ip address 10.8.0.26 255.255.255.248
+no shutdown
+exit
+
+int f2/0
+ip address 10.8.0.18 255.255.255.248
+no shutdown
+exit
+
+
+configure terminal
+router rip
+version 2
+network 10.8.0.0
+network 10.8.0.8
+network 10.8.0.16
+network 10.8.0.24
+network 10.8.0.32
+network 10.8.0.40
+network 192.168.84.0
+network 192.168.84.128
+network 192.168.84.192
+network 192.168.84.224
+end
+
+
+
+
+COMANDOS: 
+
+sh int trunk
+ver las int trunk
+
+
+
+
+
+
+
+
+ventas M
+192.168.85.135
+
+
+192.168.85.5
